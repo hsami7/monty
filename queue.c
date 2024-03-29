@@ -1,12 +1,48 @@
 #include "monty.h"
 /**
- * _queue - sets the format of the data to a queue (FIFO)
- * @stack: head
- * @num_line: num line
- */
-
-void _queue(stack_t **stack, unsigned int num_line)
+ * f_queue - prints the top
+ * @head: stack head
+ * @counter: line_number
+ * Return: no return
+*/
+void f_queue(stack_t **head, unsigned int counter)
 {
-	if (stack || num_line)
-		global.flag = 0;
+	(void)head;
+	(void)counter;
+	bus.lifi = 1;
+}
+
+/**
+ * addqueue - add node to the tail stack
+ * @n: new_value
+ * @head: head of the stack
+ * Return: no return
+*/
+void addqueue(stack_t **head, int n)
+{
+	stack_t *new_node, *aux;
+
+	aux = *head;
+	new_node = malloc(sizeof(stack_t));
+	if (new_node == NULL)
+	{
+		printf("Error\n");
+	}
+	new_node->n = n;
+	new_node->next = NULL;
+	if (aux)
+	{
+		while (aux->next)
+			aux = aux->next;
+	}
+	if (!aux)
+	{
+		*head = new_node;
+		new_node->prev = NULL;
+	}
+	else
+	{
+		aux->next = new_node;
+		new_node->prev = aux;
+	}
 }

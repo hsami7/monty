@@ -1,48 +1,45 @@
 #include "monty.h"
-globals_t global;
+bus_t bus = {NULL, NULL, NULL, 0};
 /**
- * main - main function
- * @argc: number of the arguments
- * @argv: argument
- * Return: Always 0
- */
-int main(int argc, char **argv)
+* main - monty code interpreter
+* @argc: number of arguments
+* @argv: monty file location
+* Return: 0 on success
+*/
+int main(int argc, char *argv[])
 {
+	char *content;
+	FILE *file;
+	size_t size = 0;
+	ssize_t read_line = 1;
 	stack_t *stack = NULL;
-	size_t numbytes = 0;
-	int bytesr = 0;
-	unsigned int con = 1;
+	unsigned int counter = 0;
 
-	global.flag = 1;
-	global.line = NULL;
 	if (argc != 2)
 	{
-		fputs("USAGE: monty file\n", stderr);
+		fprintf(stderr, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
-	global.fil = fopen(argv[1], "r");
-	if (global.fil == NULL)
+	file = fopen(argv[1], "r");
+	bus.file = file;
+	if (!file)
 	{
-		dprintf (2, "Error: Can't open file %s\n", argv[1]);
+		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-	while ((bytesr = getline(&global.line, &numbytes, global.fil)) != EOF)
+	while (read_line > 0)
 	{
-		delete_jump(global.line);
-		if (global.line[0] != 35)
+		content = NULL;
+		read_line = getline(&content, &size, file);
+		bus.content = content;
+		counter++;
+		if (read_line > 0)
 		{
-			global.token = strtok(global.line, " \t\n");
-			global.opco = global.token;
-			if (global.opco != NULL)
-			{
-				global.token = strtok(NULL, " \t\n");
-				func(global.opco)(&stack, con);
-			}
-			con++;
+			execute(content, &stack, counter, file);
 		}
+		free(content);
 	}
-	free_l(&stack);
-	free(global.line);
-	fclose(global.fil);
-	return (0);
+	free_stack(stack);
+	fclose(file);
+return (0);
 }

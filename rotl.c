@@ -1,28 +1,26 @@
 #include "monty.h"
 /**
- * _rotl - rotates the stack to the top.
- * @stack: head
- * @num_line: num line
+  *f_rotl- rotates the stack to the top
+  *@head: stack head
+  *@counter: line_number
+  *Return: no return
  */
-
-void _rotl(stack_t **stack, unsigned int num_line)
+void f_rotl(stack_t **head,  __attribute__((unused)) unsigned int counter)
 {
-	stack_t *temp1;
-	stack_t *temp2;
+	stack_t *tmp = *head, *aux;
 
-	if (*stack && (*stack)->next)
+	if (*head == NULL || (*head)->next == NULL)
 	{
-		temp1 = *stack;
-		temp2 = temp1;
-		*stack = temp1->next;
-		(*stack)->prev = NULL;
-		if (num_line)
-			while (temp2->next)
-			{
-				temp2 = temp2->next;
-			}
-		temp2->next = temp1;
-		temp1->prev = temp2;
-		temp1->next = NULL;
+		return;
 	}
+	aux = (*head)->next;
+	aux->prev = NULL;
+	while (tmp->next != NULL)
+	{
+		tmp = tmp->next;
+	}
+	tmp->next = *head;
+	(*head)->next = NULL;
+	(*head)->prev = tmp;
+	(*head) = aux;
 }
